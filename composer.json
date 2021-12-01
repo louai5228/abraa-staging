@@ -9,8 +9,9 @@
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.65",
-        "ramaaz/micro-contact": "^1.0.4",
-        "spatie/data-transfer-object": "^3.7"
+        "ramaaz/micro-contact": "^1.0.13",
+        "spatie/data-transfer-object": "^3.7",
+        "ext-json": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

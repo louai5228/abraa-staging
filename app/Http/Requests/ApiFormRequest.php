@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 
-abstract class CustomFormRequest extends FormRequest
+abstract class ApiFormRequest extends FormRequest
 {
     public function authorize(): bool
     {

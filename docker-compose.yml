@@ -1,0 +1,26 @@
+version: '3.7'
+services:
+    app:
+        build:
+            context: .
+            dockerfile: docker/Dockerfile
+        image: 'users_image'
+        container_name: users_container
+        tty: true
+        #restart: unless-stopped
+
+        environment:
+            DB_PASSWORD:
+            #CACHE_DRIVER: redis
+            #REDIS_HOST: redis
+        ports:
+            - 5000:80
+            #- redis
+        volumes:
+            - ./:/var/www/html
+            - ~/.ssh:/root/.ssh
+   # redis:
+       # image: redis:4.0
+      #  container_name: users_redis_container
+       # ports:
+        #    - 6389:6379

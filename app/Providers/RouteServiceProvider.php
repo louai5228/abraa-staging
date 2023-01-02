@@ -37,6 +37,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         parent::boot();
         $this->configureRateLimiting();
+
     }
 
     /**
@@ -54,6 +55,7 @@ class RouteServiceProvider extends ServiceProvider
     public function map()
     {
         Route::group(['prefix' => 'api/v1'],function (){
+            $this->mapWhatsappRoutes('routes');
             Route::middleware('api')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/api.php'));
@@ -62,5 +64,12 @@ class RouteServiceProvider extends ServiceProvider
         Route::middleware('web')
             ->namespace($this->namespace)
             ->group(base_path('routes/web.php'));
+    }
+
+    public function mapWhatsappRoutes($path)
+    {
+        Route::middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path($path.'/whatsapp/whatsapp.php'));
     }
 }

@@ -1,0 +1,40 @@
+---
+- name: "Run Docker-Compose using ansible playbook"
+  hosts: localhost
+  tasks:
+  - name: stop and remove containers
+    command: docker rm -f users_container
+    ignore_errors: yes
+  - name: build docker-compose
+    command: docker-compose up  --build  -d
+
+# Use the following command if you don't know what the container name will be when created 'make sure you replace php-apache with keywords from your container name'
+    # command: docker exec -i `docker ps -q --filter name=php-apache` bash -c "composer update"
+  #- name: chmod 755  ssh file
+   # command:  chmod 755 ~/.ssh/docker_jenkins
+  - name: copy ssh file
+    command:   docker cp ~/.ssh/docker_jenkins users_container:/root/.ssh/
+    #script:  ./docker/copyssh.sh
+  - name: Run  ssh-agent
+    command: docker exec -i users_container bash -c "sudo ssh-agent sh -c 'sudo chmod 400 /root/.ssh/docker_jenkins  &&  ssh-add -D && ssh-add /root/.ssh/docker_jenkins && ssh -T git@bitbucket.org && composer update' "
+   # script:  ./docker/install_composer.sh
+
+  - name: Run  composer install
+    command:  docker exec -i users_container bash -c "composer install" -d
+      # This task is to get into the apache container where the project file exist and run composer update command with non-interactive tty
+  - name: Run  php artisan key:gen
+    command: docker exec -i users_container bash -c " php artisan key:gen" -d
+
+  - name: Run  php artisan migrate
+    command:  docker exec -i users_container bash -c "php artisan migrate" -d
+
+  - name: Run  php artisan passport:install
+    command:  docker exec -i users_container bash -c "php artisan passport:install" -d
+    ignore_errors: yes
+  - name: stop and remove containers
+    command: docker rm -f users_container
+    ignore_errors: yes
+  #- name: Run  php serve
+  #  command:  docker exec -i users_container bash -c "php artisan serve --host=0.0.0.0 --port=80" -d
+    
+ 

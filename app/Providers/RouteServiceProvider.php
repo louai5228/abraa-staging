@@ -70,6 +70,6 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::middleware('api')
             ->namespace($this->namespace)
-            ->group(base_path($path.'/whatsapp/whatsapp.php'));
+            ->group(base_path($path.'/Whatsapp/whatsapp.php'));
     }
 }

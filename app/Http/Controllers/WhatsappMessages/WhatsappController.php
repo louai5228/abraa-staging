@@ -36,7 +36,7 @@ class WhatsappController extends Controller
         $api=$client->sendChatMessage($to,$body);
         $chat_id = trim($to,'+');
         $chat_id=$chat_id.'@c.us';
-        $message = $client->getChatsMessages('963936997540@c.us',1);
+        $message = $client->getChatsMessages($chat_id,1);
         $whatsapp_chat_messageDTO = WhatsappChatMessageDTO::fromRequest($message[0]);
         $whatsapp_chat_messageDTO->mentionedIds=json_encode($whatsapp_chat_messageDTO->mentionedIds);
         $whatsapp_chat_messageDTO->quotedMsg=json_encode($whatsapp_chat_messageDTO->quotedMsg);

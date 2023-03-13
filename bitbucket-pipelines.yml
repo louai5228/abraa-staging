@@ -3,33 +3,26 @@
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
 
-image: alpine/git:1.0.26
+image: atlassian/default-image:3
+
+pipelines:
+  branches:
+    release:
+      - step: &Push-to-GitHub
+          name: Push code changes to GitHub
+          services:
+            - docker
+          caches:
+            - docker
+          script:
+            - git remote add github "git@github.com:[yourname]/[your repo].git"
+            - git checkout $BITBUCKET_BRANCH
+            - git pull
+            - git push github $BITBUCKET_BRANCH
 
 definitions:
   services:
     docker:
       memory: 1024
 
-  steps:
-    - step: &Push-to-GitHub
-        name: Push code changes to GitHub
-        services:
-          - docker
-        caches:
-          - docker
-        script:
-          - git remote add github "https://github.com/louai5228/abraa-staging.git"
-          - git checkout release
-          - git pull
-          - git push github release
 
-pipelines:
-  branches:
-    release:
-      - step: *Push-to-GitHub
-    sandbox:
-      - step: *Push-to-GitHub
-    staging:
-      - step: *Push-to-GitHub
-    production:
-      - step: *Push-to-GitHub

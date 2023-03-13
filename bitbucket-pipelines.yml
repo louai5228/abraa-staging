@@ -3,39 +3,33 @@
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
 
-image: atlassian/default-image:3
-
-pipelines:
-  branches:
-    release:
-      - step:
-          name: "Build"
-          script:
-            - npm install
-            - npm run-script build
-          caches:
-            - "node"
-      - step:
-          name: "Build and push to github"
-          script:
-            - apt-get update
-            - apt install --assume-yes --no-install-recommends git openssh-client
-            - git config --global user.name louai5228
-            - git config --global user.email louai5228@gmail.com
-            - cd release
-            - git init
-            - git remote add github https://github.com/louai5228/abraa-staging.git
-            - git checkout -b staging
-            - git add .
-            - git commit -m "Added new version of at $(date)"
-            - git push -f github _build
+image: alpine/git:1.0.26
 
 definitions:
   services:
-    mysql:
-      image: mysql:5.7
-      environment:
-        MYSQL_DATABASE: 'homestead'
-        MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
-        MYSQL_USER: 'homestead'
-        MYSQL_PASSWORD: 'secret'
+    docker:
+      memory: 1024
+
+  steps:
+    - step: &Push-to-GitHub
+        name: Push code changes to GitHub
+        services:
+          - docker
+        caches:
+          - docker
+        script:
+          - git remote add github "https://github.com/louai5228/abraa-staging.git"
+          - git checkout release
+          - git pull
+          - git push github release
+
+pipelines:
+  branches:
+    master:
+      - step: *Push-to-GitHub
+    sandbox:
+      - step: *Push-to-GitHub
+    staging:
+      - step: *Push-to-GitHub
+    production:
+      - step: *Push-to-GitHub

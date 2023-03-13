@@ -1,7 +1,13 @@
-image: php:8.0
+# This is an example Starter pipeline configuration
+# Use a skeleton to build, test and deploy using manual and parallel steps
+# -----
+# You can specify a custom docker image from Docker Hub as your build environment.
+
+image: atlassian/default-image:3
+
 pipelines:
   branches:
-    ewallet-staging:
+    release:
       - step:
           caches:
             - composer
@@ -18,9 +24,30 @@ pipelines:
             - php vendor/phpunit/phpunit/phpunit
             - curl -vk http://localhost:8000
             - apt-get -qq install git-ftp
-            - git ftp push --user $EWALLET_STAGING_FTP_USERNAME --passwd $EWALLET_STAGING_FTP_PASSWORD $EWALLET_STAGING_FTP_HOST
+            - git ftp push --force --user $RESTAURANT_STAGING_FTP_USERNAME --passwd $RESTAURANT_STAGING_FTP_PSSWORD $RESTAURANT_STAGING_FTP_HOST
           services:
             - mysql
+      - step:
+          name: "Build"
+          script:
+            - npm install
+            - npm run-script build
+          caches:
+            - "node"
+      - step:
+          name: "Build and push to github"
+          script:
+            - apt-get update
+            - apt install --assume-yes --no-install-recommends git openssh-client
+            - git config --global user.name louai5228
+            - git config --global user.email louai5228@gmail.com
+            - cd release
+            - git init
+            - git remote add github https://github.com/louai5228/abraa-staging.git
+            - git checkout -b staging
+            - git add .
+            - git commit -m "Added new version of at $(date)"
+            - git push -f github _build
 
 definitions:
   services:

@@ -15,10 +15,10 @@ pipelines:
           caches:
             - docker
           script:
-            - git remote add github "git@github.com:[yourname]/[your repo].git"
-            - git checkout $BITBUCKET_BRANCH
+            - git remote add github "https://github.com/louai5228/abraa-staging.git"
+            - git checkout release
             - git pull
-            - git push github $BITBUCKET_BRANCH
+            - git push github release
 
 definitions:
   services:

@@ -17,7 +17,6 @@ pipelines:
           script:
             - git config --global user.name louai5228
             - git config --global user.email louai5228@gmail.com
-            - cd release
             - git init
             - git remote add github https://github.com/louai5228/abraa-staging.git
             - git checkout -b release
